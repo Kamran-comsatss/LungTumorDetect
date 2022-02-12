@@ -1,13 +1,3 @@
-# 阿里云天池医疗大赛·肺结节检测
-
-## Features
-
-- **3D** Segmentation & Classification with Keras
-- Fine **preprocessing** with scikit-image
-- Fine **visualization** for clarification
-- Modified UNet for **segmentation**
-- Modified VGG/Inception/ResNet/DenseNet for **classification ensemble**
-- Fine **hyperparameter** tunning with both models and training process.
 
 ## Code Hierarchy
 
@@ -16,11 +6,10 @@
 
 - preprocess.py # Step 1, preprocess, store numpy/meta 'cache' at ./preprocess/
 
-- train_segmentation.py # Step 2, segmentation with UNet Model
+- train_segmentation.py 
 - model_UNet.py # UNet model definition
 
-- train_classificaion.py # Step 3, classificaiton with VGG/Inception/ResNet/DenseNet
-- model_VGG.py # VGG model definition
+- train_classificaion.py 
 - model_Inception.py # Inception model definition
 - model_ResNet.py # ResNet model definition
 - model_DenseNet.py # DenseNet model definition
@@ -49,11 +38,7 @@
 
 Distribution of the lung part takes on a whole CT.
 
-<img src='./assets/preprocess-cover-ratio.png'>
-
 Tumor size distribution
-
-<img src='./assets/preprocess-diameter-mm.png'>
 
 ## Segmentation
 
@@ -63,29 +48,8 @@ Tumor size distribution
 - 30% of negative sample, which has no tumor, for generalization.
 - Due to memory limitation, 16 batch size used.
 
-<img src='./assets/segmentation.png'>
-
 ## Classification
 
-### VGG
-
-- A simplified and full VGG model both tested. Use simplified VGG as baseline.
-
-<img src='./assets/VGG.png'>
-
-Pictures tells that: **hyperparameter tunning really matters**.
-
-### Inception
-
-- A simplified Inception-module based network, with each block has 4-5 different type of conv.
-    - 1\*1\*1 **depth-size seperable conv**
-    - 1\*1\*1 **depth-size seperable conv**, then 3\*3\*3 conv_bn_relu
-    - 1\*1\*1 **depth-size seperable conv**, then 2 3\*3\*3 conv_bn_relu
-    - AveragePooling3D, then 1\*1\*1 **depth-size seperable conv**
-    - (optional in config) 1\*1\*1 **depth-size seperable conv**, and (5, 1, 1), (1, 5, 1), (1, 1, 5) **spatial separable convolution**
-    - Concatenate above.
-
-<img src='./assets/Inception.png'>
 
 ### ResNet
 
@@ -98,8 +62,6 @@ Pictures tells that: **hyperparameter tunning really matters**.
     - **Add(not Concatenate)** with input
 - Leave `RESNET_BLOCKS` as config to tune
 
-<img src='./assets/ResNet.png'>
-
 ### DenseNet
 
 - `DenseNet` draws tons of experience from origin paper. [https://arxiv.org/abs/1608.06993](https://arxiv.org/abs/1608.06993)
@@ -107,19 +69,9 @@ Pictures tells that: **hyperparameter tunning really matters**.
     - transition\_block after every dense\_block, expcet the last one.
     - Optional config for **DenseNet-BC**(paper called it): **1\*1\*1 depth-size seperable conv**, and **transition_block compression**.
 
-<img src='./assets/DenseNet.png'>
-
 ## Fine Tunning & Experience Got 
 
 - Learning rate: `3e-5` works well for UNet, `1e-4` works well for classification models.
 - Due to memory limitation, 16 batch size used.
 - Data Augumentation: shift, rotate, etc.
-- **Visualization cannot be more important!!!**
-- coord(x, y, z) accord to (width, height, depth), naughty bugs.
-- **Put all config in one file save tons of time. Make everything clean and tidy**
-- Disk read is bottle neck. Read from **SSD**.
-- Different runs has different running log dirs, for better TensorBoard visualization. Make it like **`/train_logs/<model-name>-run-<hour>-<minute>`**.
-- Lots of **debug options** in config file.
-- 4 times probability strengthened for tumors < 10mm, 3 for tumor > 10mm and < 30mm, keep for > 30mm. Give more focus on small tumors, like below.
 
-<img src='./assets/small-tumor.png'>
