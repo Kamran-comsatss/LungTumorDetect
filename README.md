@@ -63,8 +63,6 @@ Tumor size distribution
 - Leave `RESNET_BLOCKS` as config to tune
 
 ### DenseNet
-
-- `DenseNet` draws tons of experience from origin paper. [https://arxiv.org/abs/1608.06993](https://arxiv.org/abs/1608.06993)
     - 3 dense\_block with 5 bn\_relu\_conv layers according to paper. 
     - transition\_block after every dense\_block, expcet the last one.
     - Optional config for **DenseNet-BC**(paper called it): **1\*1\*1 depth-size seperable conv**, and **transition_block compression**.
